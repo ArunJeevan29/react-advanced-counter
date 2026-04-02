@@ -34,11 +34,11 @@ const App = () => {
           </div>
         </div>
 
-        <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-200 via-purple-200 to-indigo-200 mb-8 tracking-tight">
+        <h1 className="text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-300 via-purple-300 to-indigo-300 mb-8 tracking-tight drop-shadow-sm">
           Advanced Counter
         </h1>
 
-        <div className="text-8xl font-black mb-10 text-transparent bg-clip-text bg-gradient-to-b from-white to-white/60 drop-shadow-sm font-mono tracking-tighter">
+        <div className="text-8xl md:text-9xl font-black mb-10 text-transparent bg-clip-text bg-gradient-to-b from-white to-white/50 drop-shadow-lg font-mono tracking-tighter hover:scale-105 transition-transform duration-300">
           {count}
         </div>
 
