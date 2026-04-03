@@ -1,9 +1,18 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const App = () => {
-  const [count, setCount] = useState(0);
-  const [step, setStep] = useState(1);
-  const [history, setHistory] = useState([]);
+  const [count, setCount] = useState(() => {
+    const saved = localStorage.getItem("counter_count");
+    return saved !== null ? parseInt(saved, 10) : 0;
+  });
+  const [step, setStep] = useState(() => {
+    const saved = localStorage.getItem("counter_step");
+    return saved !== null ? parseInt(saved, 10) : 1;
+  });
+  const [history, setHistory] = useState(() => {
+    const saved = localStorage.getItem("counter_history");
+    return saved !== null ? JSON.parse(saved) : [];
+  });
 
   const handleIncrement = () => {
     setCount(count + step);
@@ -25,12 +34,35 @@ const App = () => {
     setHistory([]);
   };
 
+  useEffect(() => {
+    localStorage.setItem("counter_count", count.toString());
+    localStorage.setItem("counter_step", step.toString());
+    localStorage.setItem("counter_history", JSON.stringify(history));
+  }, [count, step, history]);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      // Ignore if user is typing in an input field
+      if (e.target.tagName.toLowerCase() === 'input') return;
+
+      if (e.key === 'ArrowUp') handleIncrement();
+      if (e.key === 'ArrowDown') handleDecrement();
+      if (e.key === 'r' || e.key === 'R') handleReset();
+    };
+    
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [count, step, history]);
+
   return (
     <div className="flex flex-col md:flex-row min-h-screen items-center justify-center bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-950 font-sans py-10 gap-8 px-4 text-white">
       <div className="bg-white/10 backdrop-blur-2xl border border-white/20 rounded-3xl shadow-[0_0_40px_rgba(79,70,229,0.15)] p-10 w-full max-w-md text-center transition-transform hover:scale-[1.02] duration-500">
-        <div className="flex justify-center mb-8">
+        <div className="flex flex-wrap justify-center mb-8 gap-3">
           <div className="inline-block px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs font-semibold tracking-wider uppercase text-indigo-300">
             Interactive Mode
+          </div>
+          <div className="inline-block px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs font-semibold tracking-wider uppercase text-emerald-400">
+            Auto-Saved 💾
           </div>
         </div>
 
@@ -73,6 +105,10 @@ const App = () => {
           >
             +
           </button>
+        </div>
+
+        <div className="mt-6 text-xs text-white/40 font-medium tracking-wide">
+          Tip: Use <kbd className="bg-white/10 px-1.5 py-0.5 rounded border border-white/20 font-sans shadow-sm">↑</kbd> <kbd className="bg-white/10 px-1.5 py-0.5 rounded border border-white/20 font-sans shadow-sm">↓</kbd> to change, <kbd className="bg-white/10 px-1.5 py-0.5 rounded border border-white/20 font-sans shadow-sm">R</kbd> to reset
         </div>
       </div>
 
